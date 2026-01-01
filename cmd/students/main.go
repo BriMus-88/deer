@@ -28,7 +28,7 @@ func main() {
 
 //	students.DisplayIntro()
 
-	students.MainMenuLogic()
+	students.MainMenuLogic(allStudents)
 
 
 	// myMap := make(map[string]student)
@@ -43,7 +43,7 @@ func main() {
 	// json.NewDecoder(inputfile).Decode(&myMap)	
 	
 
-	// for k, v := range myMap {
+	// for k, v := range AllStudents {
 	// 	fmt.Printf("Name: %s, Course: %s, Age: %d, City: %s\n", k, v.course, v.age, v.city)
 	// }
 
@@ -93,7 +93,6 @@ func main() {
 	// 	fmt.Println("Student is not in the map")
 	// }
 
-	fmt.Println(allStudents)
 	students.Db.Close() 
 
 }

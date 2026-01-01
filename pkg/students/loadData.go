@@ -44,13 +44,13 @@ func LoadData() ([]Student, error) {
 	}
 
 	for rows.Next() {
-		var tempS Student // A temporary struct for the current row
-		err = rows.Scan(&tempS.ID, &tempS.Name, &tempS.Course, &tempS.Age, &tempS.City)
+		var temp Student // A temporary struct for the current row
+		err = rows.Scan(&temp.ID, &temp.Name, &temp.Course, &temp.Age, &temp.City)
 		if err != nil {
 			return nil, err // Return the error if scanning fails
 		}
 		// Add this student to our list
-		studentsList = append(studentsList, tempS)
+		studentsList = append(studentsList, temp)
 	}
 
 	if err := rows.Err(); err != nil {

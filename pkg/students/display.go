@@ -21,9 +21,7 @@ func init() {
 	validUsers[3] = User{userName: "guest", password: "guest", fullName: "Guest User", role: "guest"}
 }
 
-
-
-func MainMenuLogic() {
+func MainMenuLogic(allStudents []Student) {
 
 	var choice int
 	for {
@@ -53,13 +51,8 @@ func MainMenuLogic() {
 		case 0:
 			fmt.Println("Bye Bye")
 			os.Exit(0)
-		case 1:
-			DisplayEditMenu()
-		case 2:
-			DisplaySearchMenu()
 		case 3:
-		case 4:
-			fmt.Println("Search for a student Menu")
+			DisplayAllStudents(allStudents)
 		case 5:
 			fmt.Println("Export All students to file")
 
@@ -81,17 +74,36 @@ func MainMenuLogic() {
 	}
 }
 
-func DisplaySearchMenu() {
-	fmt.Println("\nSEARCH FOR STUDENT BY:")
-	fmt.Println("\t 1. Name")
-	fmt.Println("\t 2. Age")
-	fmt.Println("\t 3. Course")
-	fmt.Println("\t 4. Return to Main Menu")
+func DisplaySearchMenu(allStudents []Student) {
+
+	for {
+		clearTerminal()
+		fmt.Println("\nSEARCH FOR STUDENT BY:")
+		fmt.Println("\t 1. Name")
+		fmt.Println("\t 2. Age")
+		fmt.Println("\t 3. Course")
+		fmt.Println("\t 0. Return to Main Menu")
+
+		var choice int
+		fmt.Scan(&choice)
+
+		switch choice {
+		case 0:
+			MainMenuLogic(allStudents)
+		case 1:
+			fmt.Println("Search for a student by name")
+		case 2:
+			fmt.Println("Search for a student by age")
+		case 3:
+			fmt.Println("Search for a student by course")
+		default:
+			fmt.Println("Invalid choice")
+		}
+	}
 }
 
-func DisplayEditMenu() {
-	
-	
+func DisplayEditMenu(allStudents []Student) {
+
 	clearTerminal()
 	fmt.Println("\nEDIT STUDENT DATABASE:")
 	fmt.Println("\t 1. Add a student")
@@ -103,7 +115,7 @@ func DisplayEditMenu() {
 
 	switch choice {
 	case 0:
-		MainMenuLogic()
+		MainMenuLogic(allStudents)
 	case 1:
 		AddStudent()
 	case 2:
@@ -111,9 +123,7 @@ func DisplayEditMenu() {
 	default:
 		fmt.Println("Invalid choice")
 	}
-}	
-
-
+}
 
 func DisplayIntro() {
 	clearTerminal()
@@ -147,4 +157,36 @@ func DisplayIntro() {
 func clearTerminal() {
 	fmt.Println("\033[H")
 	fmt.Println("\033[2J")
+}
+
+
+func DisplayAllStudents(allStudents []Student) {
+	clearTerminal()
+	fmt.Println("\nALL STUDENTS RECORDS:")
+	
+	rows, err := Db.Query(`
+		SELECT id, name, course, age, city
+		FROM students
+	`)
+	if err != nil {
+		log.Fatal(err)
+	}
+	
+	var temp Student // A temporary struct for the current row
+
+	for rows.Next() {
+		err = rows.Scan(&temp.ID, &temp.Name, &temp.Course, &temp.Age, &temp.City)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		fmt.Printf("Name: %s, Course: %s, Age: %d, City: %s\n", temp.Name, temp.Course, temp.Age, temp.City)
+	}
+
+	var choice int
+
+	fmt.Print("\n Select any key to return to main menu...")
+	fmt.Scan(&choice)
+
+	MainMenuLogic(allStudents)
 }
