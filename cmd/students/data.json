@@ -1,0 +1,112 @@
+{
+  "Adam": {
+    "course": "golang",
+    "age": 25,
+    "city": "New York"
+  },
+  "Brian": {
+    "course": "python",
+    "age": 22,
+    "city": "London"
+  },
+  "Chris": {
+    "course": "javascript",
+    "age": 20,
+    "city": "New York"
+  },
+  "Dan": {
+    "course": "java",
+    "age": 25,
+    "city": "London"
+  },
+  "Eve": {
+    "course": "python",
+    "age": 22,
+    "city": "New York"
+  },
+  "Frank": {
+    "course": "java",
+    "age": 25,
+    "city": "London"
+  },
+  "Grace": {
+    "course": "python",
+    "age": 22,
+    "city": "New York"
+  },
+  "Hank": {
+    "course": "java",
+    "age": 25,
+    "city": "London"
+  },
+  "Ivy": {
+    "course": "python",
+    "age": 22,
+    "city": "New York"
+  },
+  "Jack": {
+    "course": "java",
+    "age": 25,
+    "city": "London"
+  },
+  "Jill": {
+    "course": "python",
+    "age": 22,
+    "city": "New York"
+  },
+  "John": {
+    "course": "java",
+    "age": 25,
+    "city": "London"
+  },
+  "Julia": {
+    "course": "python",
+    "age": 22,
+    "city": "New York"
+  },
+  "Juliet": {
+    "course": "java",
+    "age": 25,
+    "city": "London"
+  },
+  "Julius": {
+    "course": "python",
+    "age": 22,
+    "city": "New York"
+  },
+  "June": {
+    "course": "java",
+    "age": 25,
+    "city": "London"
+  },
+  "July": {
+    "course": "python",
+    "age": 22,
+    "city": "New York"
+  },
+  "August": {
+    "course": "java",
+    "age": 25,
+    "city": "London"
+  },
+  "September": {
+    "course": "python",
+    "age": 22,
+    "city": "New York"
+  },
+  "October": {
+    "course": "java",
+    "age": 25,
+    "city": "London"
+  },
+  "November": {
+    "course": "python",
+    "age": 22,
+    "city": "New York"
+  },
+  "December": {
+    "course": "java",
+    "age": 25,
+    "city": "London"
+  }
+}
