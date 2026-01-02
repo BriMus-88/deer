@@ -21,6 +21,12 @@ func (s *StudentStore) CountStudents() int {
 	return count
 }
 
+func NewStudentStore(db *sql.DB) *StudentStore {
+	return &StudentStore{
+		DB: db,
+	}
+}
+
 type StudentStore struct {
 	DB *sql.DB
 }

@@ -9,7 +9,6 @@ import (
 	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
-
 func main() {
 	var dbConnection *sql.DB
 	connStr := `host=localhost port=5432 user=postgres password=2811 dbname=studentGolangTraining sslmode=disable`
@@ -24,12 +23,12 @@ func main() {
 		log.Fatal(err)
 	}
 
-	store := &studentDb.StudentStore{DB: dbConnection}
+	store := studentDb.NewStudentStore(dbConnection)
 
 	count := store.CountStudents()
 	fmt.Println("Number of students:", count)
 
-//	studentDb.DisplayIntro()
+	store.DisplayIntro()
 
 	store.MainMenuDisplay()
 
