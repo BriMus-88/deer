@@ -19,15 +19,15 @@ func (s *StudentStore) MainMenuDisplay() {
 		clearTerminal()
 		fmt.Print("MAIN MENU:")
 		fmt.Print("\n\n")
-		fmt.Println("\t1. Update Student Records")
+		fmt.Println("\t1. Manually Updating Student Records")
 		fmt.Println("\t2. Empty")
 		fmt.Println("\t3. Display all students")
 		fmt.Println("\t4. Search for a student Menu")
 		fmt.Println("\t5. Export students to file")
 		fmt.Println("\t6. Import students from file")
-		fmt.Println("\t7. Empty")
-		fmt.Println("\t8. Empty")
-		fmt.Println("\t9. Empty")
+		fmt.Println("\t7. Add student record Manually")
+		fmt.Println("\t8. Delete student record Manually")
+		fmt.Println("\t9. Edit student record Manually")
 		fmt.Println("\t0. Exit")
 
 		count := s.CountStudents()
@@ -56,13 +56,12 @@ func (s *StudentStore) MainMenuDisplay() {
 			//			fmt.Println("Import students from file")
 
 		case 7:
-			fmt.Println("Group students by course")
-
+			s.AddStudentMenu()
 		case 8:
-			fmt.Println("Switch modes")
+			s.DeleteStudentMenu()
 
 		case 9:
-			fmt.Println("Delete all students")
+			fmt.Println("to be edited")
 		default:
 			fmt.Println("Invalid choice")
 		}
@@ -240,4 +239,120 @@ func (s *StudentStore) DisplayIntro() {
 func clearTerminal() {
 	fmt.Println("\033[H")
 	fmt.Println("\033[2J")
+}
+
+func (s *StudentStore) DeleteStudentMenu() {
+
+	scanner := bufio.NewScanner(os.Stdin)
+
+	for {
+		clearTerminal()
+		fmt.Println("\nDELETE STUDENT RECORD BY STUDENT NAME:")
+		fmt.Print("\n\t Enter Student Name : ")
+
+		var name2Search string
+		if scanner.Scan() {
+			name2Search = scanner.Text()
+		}
+
+		rows, err := s.DB.Query(`
+			SELECT id, name, course, age, city
+			FROM students
+			WHERE name ILIKE $1
+		`, "%"+name2Search+"%")
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		foundCount := 0
+		var temp Student // A temporary struct for the current row
+		for rows.Next() {
+			err = rows.Scan(&temp.ID, &temp.Name, &temp.Course, &temp.Age, &temp.City)
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			fmt.Printf("ID: %d\n", temp.ID)
+			fmt.Printf("Name: %s\n", temp.Name)
+			fmt.Printf("Course: %s\n", temp.Course)
+			fmt.Printf("Age: %d\n", temp.Age)
+			fmt.Printf("City: %s\n", temp.City)
+			fmt.Println("---------------------------")
+			foundCount++
+		}
+
+		if foundCount == 0 {
+			fmt.Println("No results found for:", name2Search)
+		} else {
+			fmt.Printf("Total results found: %d\n", foundCount)
+		}
+
+		id2Delete := 0
+		fmt.Print("\nEnter ID of Student Record to delete: ")
+		if scanner.Scan() {
+			id2Delete, _ = strconv.Atoi(scanner.Text())
+		}
+
+		rows, err = s.DB.Query(`
+			SELECT id, name, course, age, city
+			FROM students
+			WHERE id = $1
+		`, id2Delete)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		clearTerminal()
+		fmt.Println("---------------------------")
+		fmt.Printf("ID: %d\n", temp.ID)
+		fmt.Printf("Name: %s\n", temp.Name)
+		fmt.Printf("Course: %s\n", temp.Course)
+		fmt.Printf("Age: %d\n", temp.Age)
+		fmt.Printf("City: %s\n", temp.City)
+		fmt.Println("---------------------------")
+
+		fmt.Print("\nConfirm this is the Student Record to delete? (y/n): ")
+		if scanner.Scan() {
+			choice := scanner.Text()
+			if choice == "y" {
+				
+				_, err := s.DB.Exec(`
+					DELETE FROM students
+					WHERE id = $1	
+				`, id2Delete)
+				if err != nil {
+					log.Println(err)
+					fmt.Println("\nStudent Record not deleted due to error", err)
+				}else{
+					fmt.Println("\nStudent Record deleted")
+				}
+				
+
+			} else {
+				fmt.Println("\nStudent Record not deleted")
+			}
+		}
+
+		fmt.Println("\n\t Please select")
+		fmt.Println("\t\t 1. Search another student to delete")
+		fmt.Println("\t\t 2. Return to Main Menu")
+		fmt.Println("\t\t 0. Exit the program")
+		for {
+			if scanner.Scan() {
+				choice := scanner.Text()
+				switch choice {
+				case "1":
+					s.DeleteStudentMenu()
+				case "2":
+					s.MainMenuDisplay()
+				case "0":
+					os.Exit(0)
+				default:
+					fmt.Println("Invalid choice")
+				}
+			}
+		}
+
+	}
+
 }

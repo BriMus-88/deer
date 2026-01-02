@@ -2,7 +2,7 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
+	
 	"log"
 
 	"github.com/briMus-88/deer/pkg/studentDb"
@@ -25,10 +25,7 @@ func main() {
 
 	store := studentDb.NewStudentStore(dbConnection)
 
-	count := store.CountStudents()
-	fmt.Println("Number of students:", count)
-
-	store.DisplayIntro()
+//	store.DisplayIntro()
 
 	store.MainMenuDisplay()
 
