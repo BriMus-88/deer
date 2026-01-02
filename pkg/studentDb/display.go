@@ -208,34 +208,50 @@ func SearchStudentByName(dbConnection *sql.DB) {
 	}
 }
 
-// func DisplayIntro() {
-// 	clearTerminal()
-// 	var userName, password string
+func DisplayIntro() {
 
-// 	for {
-// 		fmt.Println("\nWelcome to the student management database (SAD)")
-// 		fmt.Print("\n")
-// 		fmt.Print("Enter User Name : ")
-// 		fmt.Scan(&userName)
-// 		fmt.Print("Enter Password : ")
-// 		fmt.Scan(&password)
-// 		fmt.Print("\n")
+	type User struct {
+		userName string
+		password string
+		fullName string
+		role     string
+	}
 
-// 		for k := range validUsers {
-// 			if validUsers[k].userName == userName {
-// 				if validUsers[k].password == password {
-// 					fmt.Println("Welcome", validUsers[k].fullName)
-// 					fmt.Println("Its running on file mode")
+	var validUsers = make(map[int]User)
 
-// 					return
-// 				}
-// 			}
+	validUsers[1] = User{userName: "admin", password: "admin", fullName: "Admin User", role: "admin"}
+	validUsers[2] = User{userName: "user", password: "user", fullName: "User User", role: "user"}
+	validUsers[3] = User{userName: "guest", password: "guest", fullName: "Guest User", role: "guest"}
 
-// 		}
-// 		fmt.Println("Invalid User Name or Password")
+	clearTerminal()
+	var userName, password string
+	scanner := bufio.NewScanner(os.Stdin)
+	for {
+		fmt.Println("\nWelcome to the student management database (SAD)")
+		fmt.Print("\n")
+		fmt.Print("Enter User Name : ")
+		scanner.Scan()
+		userName = scanner.Text()
+		fmt.Print("Enter Password : ")
+		scanner.Scan()
+		password = scanner.Text()
+		fmt.Print("\n")
 
-// 	}
-// }
+		for k := range validUsers {
+			if validUsers[k].userName == userName {
+				if validUsers[k].password == password {
+					fmt.Println("Welcome", validUsers[k].fullName)
+					fmt.Println("Its running on file mode")
+
+					return
+				}
+			}
+
+		}
+		fmt.Println("Invalid User Name or Password")
+
+	}
+}
 
 func clearTerminal() {
 	fmt.Println("\033[H")
