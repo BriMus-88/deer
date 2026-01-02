@@ -1,16 +1,13 @@
 package studentDb
 
 import (
+	"bufio"
 	"database/sql"
 	"fmt"
 	"log"
 	"os"
-	"bufio"
 	"strconv"
 )
-
-
-
 
 type Student struct {
 	ID     int
@@ -20,13 +17,10 @@ type Student struct {
 	City   string
 }
 
-
-
-
 func AllStudentsList(dbConnection *sql.DB) {
 	clearTerminal()
 	fmt.Println("\nALL STUDENTS RECORDS:")
-	
+
 	rows, err := dbConnection.Query(`
 		SELECT id, name, course, age, city
 		FROM students
@@ -54,8 +48,6 @@ func AllStudentsList(dbConnection *sql.DB) {
 
 	MainMenuDisplay(dbConnection)
 }
-
-
 
 func AddStudentMenu(dbConnection *sql.DB) {
 
@@ -85,9 +77,12 @@ func AddStudentMenu(dbConnection *sql.DB) {
 			city = scanner.Text()
 		}
 
-		dbConnection.QueryRow(`INSERT INTO students (name, course, age, city) VALUES ($1, $2, $3, $4)`, name, course, age, city)
-
-		fmt.Println("Student added successfully")
+		_, err := dbConnection.Exec(`INSERT INTO students (name, course, age, city) VALUES ($1, $2, $3, $4)`, name, course, age, city)
+		if err != nil {
+			fmt.Println("Error adding student:", err)
+		} else {
+			fmt.Println("Student added successfully")
+		}
 
 		fmt.Print("Do you want to add another student? (y/n) :")
 		var choice string

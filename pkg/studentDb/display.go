@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 
-	// 	"log"
+	"log"
 	// 	"time"
 	"os"
 	"strconv"
@@ -41,9 +41,9 @@ func MainMenuDisplay(dbConnection *sql.DB) {
 		fmt.Println("\t4. Search for a student Menu")
 		fmt.Println("\t5. Export students to file")
 		fmt.Println("\t6. Import students from file")
-		fmt.Println("\t7. Group students by course")
-		fmt.Println("\t8. Switch modes")
-		fmt.Println("\t9. Delete all students")
+		fmt.Println("\t7. Empty")
+		fmt.Println("\t8. Empty")
+		fmt.Println("\t9. Empty")
 		fmt.Println("\t0. Exit")
 
 		count := CountStudents(dbConnection)
@@ -63,6 +63,8 @@ func MainMenuDisplay(dbConnection *sql.DB) {
 			UpdateDbMenu(dbConnection)
 		case 3:
 			AllStudentsList(dbConnection)
+		case 4:
+			SearchMenuDisplay(dbConnection)
 		case 5:
 			//			fmt.Println("Export All students to file")
 
@@ -84,38 +86,42 @@ func MainMenuDisplay(dbConnection *sql.DB) {
 	}
 }
 
-// func DisplaySearchMenu(allStudents []Student) {
+func SearchMenuDisplay(dbConnection *sql.DB) {
+	scanner := bufio.NewScanner(os.Stdin)
+	var choice int
+	for {
+		clearTerminal()
+		fmt.Println("\nSEARCH FOR STUDENT BY:")
+		fmt.Println("\t 1. Name")
+		fmt.Println("\t 2. Age")
+		fmt.Println("\t 3. Course")
+		fmt.Println("\t 0. Return to Main Menu")
 
-// 	for {
-// 		clearTerminal()
-// 		fmt.Println("\nSEARCH FOR STUDENT BY:")
-// 		fmt.Println("\t 1. Name")
-// 		fmt.Println("\t 2. Age")
-// 		fmt.Println("\t 3. Course")
-// 		fmt.Println("\t 0. Return to Main Menu")
+		fmt.Print("\nEnter Selection : ")
 
-// 		var choice int
-// 		fmt.Scan(&choice)
+		if scanner.Scan() {
+			choice, _ = strconv.Atoi(scanner.Text())
+		}
 
-// 		switch choice {
-// 		case 0:
-// 			MainMenuLogic(allStudents)
-// 		case 1:
-// 			SearchStudentByName()
-// 		case 2:
-// 			fmt.Println("Search for a student by age")
-// 		case 3:
-// 			fmt.Println("Search for a student by course")
-// 		default:
-// 			fmt.Println("Invalid choice")
-// 		}
-// 	}
-// }
+		switch choice {
+		case 0:
+			MainMenuDisplay(dbConnection)
+		case 1:
+			SearchStudentByName(dbConnection)
+		case 2:
+			//
+		case 3:
+			//
+		default:
+			fmt.Println("Invalid choice")
+		}
+	}
+}
 
 func UpdateDbMenu(dbConnection *sql.DB) {
-	
+
 	scanner := bufio.NewScanner(os.Stdin)
-	
+
 	for {
 		clearTerminal()
 		fmt.Println("\nEDIT STUDENT DATABASE:")
@@ -141,6 +147,64 @@ func UpdateDbMenu(dbConnection *sql.DB) {
 		default:
 			fmt.Println("Invalid choice")
 		}
+	}
+}
+
+func SearchStudentByName(dbConnection *sql.DB) {
+
+	scanner := bufio.NewScanner(os.Stdin)
+
+	for {
+		clearTerminal()
+		fmt.Println("\nSEARCH BY STUDENT NAME:")
+		fmt.Print("\n\t Enter Student Name : ")
+
+		var name2Search string
+		if scanner.Scan() {
+			name2Search = scanner.Text()
+		}
+
+		rows, err := dbConnection.Query(`
+			SELECT id, name, course, age, city
+			FROM students
+			WHERE name ILIKE $1
+		`, "%"+name2Search+"%")
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		foundCount := 0
+		var temp Student // A temporary struct for the current row
+		for rows.Next() {
+			err = rows.Scan(&temp.ID, &temp.Name, &temp.Course, &temp.Age, &temp.City)
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			fmt.Printf("ID: %d\n", temp.ID)
+			fmt.Printf("Name: %s\n", temp.Name)
+			fmt.Printf("Course: %s\n", temp.Course)
+			fmt.Printf("Age: %d\n", temp.Age)
+			fmt.Printf("City: %s\n", temp.City)
+			fmt.Println("---------------------------")
+			foundCount++
+		}
+
+		if foundCount == 0 {
+			fmt.Println("No results found for:", name2Search)
+		} else {
+			fmt.Printf("Total results found: %d\n", foundCount)
+		}
+
+		fmt.Print("\nSearch again? (y/n): ")
+		if scanner.Scan() {
+			choice := scanner.Text()
+			if choice != "y" {
+				MainMenuDisplay(dbConnection)
+			}
+
+		}
+
 	}
 }
 
@@ -171,43 +235,6 @@ func UpdateDbMenu(dbConnection *sql.DB) {
 // 		fmt.Println("Invalid User Name or Password")
 
 // 	}
-// }
-
-// func clearTerminal() {
-// 	fmt.Println("\033[H")
-// 	fmt.Println("\033[2J")
-// }
-
-// func DisplayAllStudents(allStudents []Student) {
-// 	clearTerminal()
-// 	fmt.Println("\nALL STUDENTS RECORDS:")
-// 	time.Sleep(2 * time.Second)
-// 	rows, err := Db.Query(`
-// 		SELECT id, name, course, age, city
-// 		FROM students
-// 	`)
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-
-// 	var temp Student // A temporary struct for the current row
-
-// 	for rows.Next() {
-// 		err = rows.Scan(&temp.ID, &temp.Name, &temp.Course, &temp.Age, &temp.City)
-// 		if err != nil {
-// 			log.Fatal(err)
-// 		}
-
-// 		fmt.Printf("Name: %s, Course: %s, Age: %d, City: %s\n", temp.Name, temp.Course, temp.Age, temp.City)
-// 	}
-
-// 	fmt.Print("\n Press enter key to return to main menu...")
-// 	scanner := bufio.NewScanner(os.Stdin)
-// 	if scanner.Scan() {
-// 		MainMenuLogic(allStudents)
-// 	}
-
-// 	MainMenuLogic(allStudents)
 // }
 
 func clearTerminal() {

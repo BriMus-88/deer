@@ -43,9 +43,6 @@ func main() {
 
 
 
-
-
-
 	// rows, err := dbConnection.Query(`
 	// 	SELECT id, name, course, age, city
 	// 	FROM students
