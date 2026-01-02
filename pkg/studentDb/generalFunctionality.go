@@ -9,13 +9,6 @@ import (
 	"strconv"
 )
 
-type Student struct {
-	ID     int
-	Name   string
-	Course string
-	Age    int
-	City   string
-}
 
 func AllStudentsList(dbConnection *sql.DB) {
 	clearTerminal()

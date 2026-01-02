@@ -13,20 +13,6 @@ import (
 	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
-// type User struct {
-// 	userName string
-// 	password string
-// 	fullName string
-// 	role     string
-// }
-
-// var validUsers = make(map[int]User)
-
-// func init() {
-// 	validUsers[1] = User{userName: "admin", password: "admin", fullName: "Admin User", role: "admin"}
-// 	validUsers[2] = User{userName: "user", password: "user", fullName: "User User", role: "user"}
-// 	validUsers[3] = User{userName: "guest", password: "guest", fullName: "Guest User", role: "guest"}
-// }
 
 func MainMenuDisplay(dbConnection *sql.DB) {
 	scanner := bufio.NewScanner(os.Stdin)

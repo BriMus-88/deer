@@ -9,14 +9,6 @@ import (
 	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
-type Student struct {
-	ID     int
-	Name   string
-	Course string
-	Age    int
-	City   string
-}
-
 
 func main() {
 	var dbConnection *sql.DB
