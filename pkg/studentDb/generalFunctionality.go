@@ -2,19 +2,17 @@ package studentDb
 
 import (
 	"bufio"
-	"database/sql"
 	"fmt"
 	"log"
 	"os"
 	"strconv"
 )
 
-
-func AllStudentsList(dbConnection *sql.DB) {
+func (s *StudentStore) AllStudentsList() {
 	clearTerminal()
 	fmt.Println("\nALL STUDENTS RECORDS:")
 
-	rows, err := dbConnection.Query(`
+	rows, err := s.DB.Query(`
 		SELECT id, name, course, age, city
 		FROM students
 	`)
@@ -36,13 +34,13 @@ func AllStudentsList(dbConnection *sql.DB) {
 	fmt.Print("\n Press enter key to return to main menu...")
 	scanner := bufio.NewScanner(os.Stdin)
 	if scanner.Scan() {
-		MainMenuDisplay(dbConnection)
+		s.MainMenuDisplay()
 	}
 
-	MainMenuDisplay(dbConnection)
+	s.MainMenuDisplay()
 }
 
-func AddStudentMenu(dbConnection *sql.DB) {
+func (s *StudentStore) AddStudentMenu() {
 
 	scanner := bufio.NewScanner(os.Stdin)
 
@@ -70,7 +68,7 @@ func AddStudentMenu(dbConnection *sql.DB) {
 			city = scanner.Text()
 		}
 
-		_, err := dbConnection.Exec(`INSERT INTO students (name, course, age, city) VALUES ($1, $2, $3, $4)`, name, course, age, city)
+		_, err := s.DB.Exec(`INSERT INTO students (name, course, age, city) VALUES ($1, $2, $3, $4)`, name, course, age, city)
 		if err != nil {
 			fmt.Println("Error adding student:", err)
 		} else {

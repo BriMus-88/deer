@@ -2,7 +2,6 @@ package studentDb
 
 import (
 	"bufio"
-	"database/sql"
 	"fmt"
 
 	"log"
@@ -13,8 +12,7 @@ import (
 	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
-
-func MainMenuDisplay(dbConnection *sql.DB) {
+func (s *StudentStore) MainMenuDisplay() {
 	scanner := bufio.NewScanner(os.Stdin)
 	var choice int
 	for {
@@ -32,7 +30,7 @@ func MainMenuDisplay(dbConnection *sql.DB) {
 		fmt.Println("\t9. Empty")
 		fmt.Println("\t0. Exit")
 
-		count := CountStudents(dbConnection)
+		count := s.CountStudents()
 
 		fmt.Print("\nNumber of students: ", count)
 
@@ -46,11 +44,11 @@ func MainMenuDisplay(dbConnection *sql.DB) {
 			fmt.Println("Bye Bye")
 			os.Exit(0)
 		case 1:
-			UpdateDbMenu(dbConnection)
+			s.UpdateDbMenu()
 		case 3:
-			AllStudentsList(dbConnection)
+			s.AllStudentsList()
 		case 4:
-			SearchMenuDisplay(dbConnection)
+			s.SearchMenuDisplay()
 		case 5:
 			//			fmt.Println("Export All students to file")
 
@@ -72,7 +70,7 @@ func MainMenuDisplay(dbConnection *sql.DB) {
 	}
 }
 
-func SearchMenuDisplay(dbConnection *sql.DB) {
+func (s *StudentStore) SearchMenuDisplay() {
 	scanner := bufio.NewScanner(os.Stdin)
 	var choice int
 	for {
@@ -91,9 +89,9 @@ func SearchMenuDisplay(dbConnection *sql.DB) {
 
 		switch choice {
 		case 0:
-			MainMenuDisplay(dbConnection)
+			s.MainMenuDisplay()
 		case 1:
-			SearchStudentByName(dbConnection)
+			s.SearchStudentByName()
 		case 2:
 			//
 		case 3:
@@ -104,7 +102,7 @@ func SearchMenuDisplay(dbConnection *sql.DB) {
 	}
 }
 
-func UpdateDbMenu(dbConnection *sql.DB) {
+func (s *StudentStore) UpdateDbMenu() {
 
 	scanner := bufio.NewScanner(os.Stdin)
 
@@ -124,9 +122,9 @@ func UpdateDbMenu(dbConnection *sql.DB) {
 
 		switch choice {
 		case 0:
-			MainMenuDisplay(dbConnection)
+			s.MainMenuDisplay()
 		case 1:
-			AddStudentMenu(dbConnection)
+			s.AddStudentMenu()
 		case 2:
 			fmt.Println("Remove a student")
 			// DeleteStudentRecord()
@@ -136,7 +134,7 @@ func UpdateDbMenu(dbConnection *sql.DB) {
 	}
 }
 
-func SearchStudentByName(dbConnection *sql.DB) {
+func (s *StudentStore) SearchStudentByName() {
 
 	scanner := bufio.NewScanner(os.Stdin)
 
@@ -150,7 +148,7 @@ func SearchStudentByName(dbConnection *sql.DB) {
 			name2Search = scanner.Text()
 		}
 
-		rows, err := dbConnection.Query(`
+		rows, err := s.DB.Query(`
 			SELECT id, name, course, age, city
 			FROM students
 			WHERE name ILIKE $1
@@ -186,7 +184,7 @@ func SearchStudentByName(dbConnection *sql.DB) {
 		if scanner.Scan() {
 			choice := scanner.Text()
 			if choice != "y" {
-				MainMenuDisplay(dbConnection)
+				s.MainMenuDisplay()
 			}
 
 		}
@@ -194,7 +192,7 @@ func SearchStudentByName(dbConnection *sql.DB) {
 	}
 }
 
-func DisplayIntro() {
+func (s *StudentStore) DisplayIntro() {
 
 	type User struct {
 		userName string

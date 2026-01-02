@@ -8,11 +8,11 @@ import (
 	// "bufio"
 )
 
-func CountStudents(dbConnection *sql.DB) int {
+func (s *StudentStore) CountStudents() int {
 
 	var count int
 
-	err := dbConnection.QueryRow(`SELECT COUNT(*) FROM students`).Scan(&count)
+	err := s.DB.QueryRow(`SELECT COUNT(*) FROM students`).Scan(&count)
 	if err != nil {
 		fmt.Println("Error counting students:", err)
 		return 0
@@ -21,3 +21,6 @@ func CountStudents(dbConnection *sql.DB) int {
 	return count
 }
 
+type StudentStore struct {
+	DB *sql.DB
+}

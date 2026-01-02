@@ -24,12 +24,14 @@ func main() {
 		log.Fatal(err)
 	}
 
-	count := studentDb.CountStudents(dbConnection)
+	store := &studentDb.StudentStore{DB: dbConnection}
+
+	count := store.CountStudents()
 	fmt.Println("Number of students:", count)
 
-	studentDb.DisplayIntro()
+//	studentDb.DisplayIntro()
 
-	studentDb.MainMenuDisplay(dbConnection)
+	store.MainMenuDisplay()
 
 	defer dbConnection.Close()
 }
