@@ -1,4 +1,4 @@
-module github.com/brian/deer
+module github.com/briMus-88/deer
 
 go 1.25.1
 

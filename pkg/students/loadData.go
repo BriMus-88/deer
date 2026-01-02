@@ -2,9 +2,10 @@ package students
 
 import (
 	"database/sql"
-
+	"bufio"
 	"log"
-
+	"os"
+	"strconv"
 	_ "github.com/jackc/pgx/v5/stdlib"
 	
 )
@@ -74,3 +75,6 @@ func CountStudents() (int, error) {
 
 	return count, nil	
 }
+
+
+

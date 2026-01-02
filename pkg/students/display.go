@@ -1,8 +1,11 @@
 package students
 
 import (
+	"bufio"
 	"fmt"
 	"log"
+	"time"
+	"strconv"
 	"os"
 )
 
@@ -22,12 +25,12 @@ func init() {
 }
 
 func MainMenuLogic(allStudents []Student) {
-
+		scanner := bufio.NewScanner(os.Stdin)
 	var choice int
 	for {
 		clearTerminal()
 		fmt.Print("MAIN MENU:")
-		fmt.Print("\n")
+		fmt.Print("\n\n")
 		fmt.Println("1. Update Student Database")
 		fmt.Println("2. Empty")
 		fmt.Println("3. Display all students")
@@ -43,14 +46,20 @@ func MainMenuLogic(allStudents []Student) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Print("Number of students: ", count)
-		fmt.Print("\nEnter your choice: ")
-		fmt.Scan(&choice)
+		fmt.Print("\nNumber of students: ", count)
+
+		fmt.Print("\n Enter selection: ")
+		if scanner.Scan() {
+			choice, _ = strconv.Atoi(scanner.Text())
+		}
+
 
 		switch choice {
 		case 0:
 			fmt.Println("Bye Bye")
 			os.Exit(0)
+		case 1:
+			DisplayEditMenu(allStudents)
 		case 3:
 			DisplayAllStudents(allStudents)
 		case 5:
@@ -91,7 +100,7 @@ func DisplaySearchMenu(allStudents []Student) {
 		case 0:
 			MainMenuLogic(allStudents)
 		case 1:
-			fmt.Println("Search for a student by name")
+			SearchStudentByName()
 		case 2:
 			fmt.Println("Search for a student by age")
 		case 3:
@@ -103,25 +112,27 @@ func DisplaySearchMenu(allStudents []Student) {
 }
 
 func DisplayEditMenu(allStudents []Student) {
+	for {
+		clearTerminal()
+		fmt.Println("\nEDIT STUDENT DATABASE:")
+		fmt.Println("\t 1. Add a student")
+		fmt.Println("\t 2. Delete a student")
+		fmt.Println("\t 0. Return to Main Menu")
 
-	clearTerminal()
-	fmt.Println("\nEDIT STUDENT DATABASE:")
-	fmt.Println("\t 1. Add a student")
-	fmt.Println("\t 2. Remove a student")
-	fmt.Println("\t 0. Return to Main Menu")
+		var choice int
+		fmt.Scan(&choice)
 
-	var choice int
-	fmt.Scan(&choice)
-
-	switch choice {
-	case 0:
-		MainMenuLogic(allStudents)
-	case 1:
-		AddStudent()
-	case 2:
-		fmt.Println("Remove a student")
-	default:
-		fmt.Println("Invalid choice")
+		switch choice {
+		case 0:
+			MainMenuLogic(allStudents)
+		case 1:
+			AddStudent()
+		case 2:
+			fmt.Println("Remove a student")
+			// DeleteStudentRecord()
+		default:
+			fmt.Println("Invalid choice")
+		}
 	}
 }
 
@@ -159,11 +170,10 @@ func clearTerminal() {
 	fmt.Println("\033[2J")
 }
 
-
 func DisplayAllStudents(allStudents []Student) {
 	clearTerminal()
 	fmt.Println("\nALL STUDENTS RECORDS:")
-	
+	time.Sleep(2 * time.Second)
 	rows, err := Db.Query(`
 		SELECT id, name, course, age, city
 		FROM students
@@ -171,7 +181,7 @@ func DisplayAllStudents(allStudents []Student) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	
+
 	var temp Student // A temporary struct for the current row
 
 	for rows.Next() {
@@ -183,10 +193,13 @@ func DisplayAllStudents(allStudents []Student) {
 		fmt.Printf("Name: %s, Course: %s, Age: %d, City: %s\n", temp.Name, temp.Course, temp.Age, temp.City)
 	}
 
-	var choice int
 
-	fmt.Print("\n Select any key to return to main menu...")
-	fmt.Scan(&choice)
+	fmt.Print("\n Press enter key to return to main menu...")
+	scanner := bufio.NewScanner(os.Stdin) 	
+	if scanner.Scan() {
+		MainMenuLogic(allStudents)
+	}
 
+	
 	MainMenuLogic(allStudents)
 }
