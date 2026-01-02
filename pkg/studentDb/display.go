@@ -88,7 +88,7 @@ func (s *StudentStore) SearchMenuDisplay() {
 
 		switch choice {
 		case 0:
-			s.MainMenuDisplay()
+			return
 		case 1:
 			s.SearchStudentByName()
 		case 2:
@@ -121,7 +121,7 @@ func (s *StudentStore) UpdateDbMenu() {
 
 		switch choice {
 		case 0:
-			s.MainMenuDisplay()
+			return
 		case 1:
 			s.AddStudentMenu()
 		case 2:
@@ -183,7 +183,7 @@ func (s *StudentStore) SearchStudentByName() {
 		if scanner.Scan() {
 			choice := scanner.Text()
 			if choice != "y" {
-				s.MainMenuDisplay()
+				return
 			}
 
 		}
@@ -344,7 +344,7 @@ func (s *StudentStore) DeleteStudentMenu() {
 				case "1":
 					s.DeleteStudentMenu()
 				case "2":
-					s.MainMenuDisplay()
+					return
 				case "0":
 					os.Exit(0)
 				default:
